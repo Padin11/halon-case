@@ -62,17 +62,8 @@ Este projeto não foi concebido apenas como um CRUD, mas como uma base sólida p
 
 ### 2. Suba os Containers
 ```bash
-docker compose up --build -d
 
-
-1.  **Clone o repositório:**
-
-    ```bash
-    git clone https://github.com/Padin11/halon-case.git
-    cd halon-case
-    ```
-
-2.  **Configuração de Ambiente (.env):**
+1.  **Configuração de Ambiente (.env):**
     O projeto já possui um arquivo `.env` configurado para o ambiente Docker local padrão.
 
       * *Banco:* `financeiro_db`
@@ -80,7 +71,7 @@ docker compose up --build -d
       * *Senha:* `senha_segura123`
       * *Secret Key:* Configurada para dev.
 
-3.  **Subir a Aplicação:**
+2.  **Subir a Aplicação:**
     Execute o comando de orquestração:
 
     ```bash
@@ -89,10 +80,10 @@ docker compose up --build -d
 
     *Aguarde cerca de 30s na primeira execução para o banco inicializar e a API subir.*
 
-4.  **Acessar:**
+3.  **Acessar:**
 
-      * **Frontend:** [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000)
-      * **API Docs:** [http://localhost:8000/docs](https://www.google.com/search?q=http://localhost:8000/docs)
+      * **Frontend:** [http://localhost:3000]
+      * **API Docs:** [http://localhost:8000/docs]
 
 -----
 
