@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halon Financeiro - Modular</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+    <div id="loginScreen" class="login-wrapper">
+        <div class="card p-5 shadow-lg border-0" style="width: 400px; border-radius: 20px;">
+            <div class="text-center mb-4">
+                <div class="display-1 mb-3">💰</div>
+                <h3 class="fw-bold">Halon Financeiro</h3>
+                <p class="text-muted">Gestão Inteligente</p>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold">Usuário / E-mail</label>
+                <input type="text" id="email" class="form-control form-control-lg" placeholder="Usuário ou E-mail">
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">Senha</label>
+                <div class="input-group">
+                    <input type="password" id="senha" class="form-control form-control-lg" placeholder="Senha">
+                    <button class="btn btn-outline-secondary" type="button" onclick="toggleSenha()" tabindex="-1">
+                        <i class="bi bi-eye" id="iconSenha"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button onclick="fazerLogin()" class="btn btn-primary btn-lg w-100 shadow-sm">Entrar</button>
+            <div id="loginError" class="text-danger text-center mt-3 hidden"><small>Erro ao entrar</small></div>
+        </div>
+    </div>
+
+    <div id="appScreen" class="container-fluid py-4 hidden">
+        
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="fw-bold mb-0 text-dark">Visão Geral</h2>
+                <span class="text-muted" id="dataAtual">Carregando...</span>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#modalNovo">
+                    <i class="bi bi-plus-lg"></i> Novo
+                </button>
+                <button onclick="logout()" class="btn btn-danger shadow-sm"><i class="bi bi-power"></i> Sair</button>
+            </div>
+        </div>
+
+        <div class="row mb-4 g-4">
+            <div class="col-xl-3 col-md-6"><div class="kpi-card h-100 p-4 border-start border-5 border-primary"><div class="text-uppercase text-muted small fw-bold mb-1">Saldo</div><div class="h3 fw-bold mb-0" id="valSaldo">...</div></div></div>
+            <div class="col-xl-3 col-md-6"><div class="kpi-card h-100 p-4 border-start border-5 border-success"><div class="text-uppercase text-muted small fw-bold mb-1">Receita</div><div class="h3 fw-bold mb-0" id="valReceber">...</div></div></div>
+            <div class="col-xl-3 col-md-6"><div class="kpi-card h-100 p-4 border-start border-5 border-warning"><div class="text-uppercase text-muted small fw-bold mb-1">Despesa</div><div class="h3 fw-bold mb-0" id="valPagar">...</div></div></div>
+            <div class="col-xl-3 col-md-6"><div class="kpi-card h-100 p-4 border-start border-5 border-danger"><div class="text-uppercase text-muted small fw-bold mb-1">Risco</div><div class="h3 fw-bold mb-0" id="valVencido">...</div></div></div>
+        </div>
+
+        <div class="row mb-4 g-4">
+            <div class="col-lg-8"><div class="chart-container h-100"><h5 class="fw-bold mb-4">Fluxo Mensal</h5><div style="height: 300px;"><canvas id="chartFluxo"></canvas></div></div></div>
+            <div class="col-lg-4"><div class="chart-container h-100"><h5 class="fw-bold mb-4">Categorias</h5><div style="height: 300px;"><canvas id="chartCategoria"></canvas></div></div></div>
+        </div>
+
+        <div class="row mb-4 g-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-2">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-0"><i class="bi bi-search"></i></span>
+                            <input type="text" id="inputBuscaRanking" class="form-control border-0 shadow-none" placeholder="Buscar Cliente ou Fornecedor específico (Digite 2 letras)...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="areaBuscaResultados" class="col-12 hidden">
+                <div class="chart-container h-100 border border-primary">
+                    <h5 class="fw-bold mb-3 text-primary"><i class="bi bi-list-check"></i> Resultados da Busca</h5>
+                    <ul class="list-group list-group-flush" id="listaBusca"></ul>
+                </div>
+            </div>
+
+            <div id="areaRankingsPadrao" class="row g-4 mt-0 px-0 mx-0 w-100">
+                <div class="col-md-6 ps-0">
+                    <div class="chart-container h-100">
+                        <h5 class="fw-bold mb-3 text-danger">Top Devedores</h5>
+                        <ul class="list-group list-group-flush" id="listaDevedores"></ul>
+                    </div>
+                </div>
+                <div class="col-md-6 pe-0">
+                    <div class="chart-container h-100">
+                        <h5 class="fw-bold mb-3 text-warning">Maiores Credores</h5>
+                        <ul class="list-group list-group-flush" id="listaCredores"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h5 class="fw-bold mb-4">Últimos Lançamentos</h5>
+            <div class="table-responsive"><table class="table align-middle"><thead class="table-light"><tr><th>Data</th><th>Descrição</th><th>Status</th><th class="text-end">Valor</th></tr></thead><tbody id="tabelaTitulos"></tbody></table></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNovo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Novo Lançamento</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                <div class="modal-body">
+                    <form id="formNovoTitulo">
+                        <div class="mb-3"><label>Descrição</label><input type="text" id="inpDesc" class="form-control" required placeholder="Ex: Venda de Serviço"></div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><label>Valor</label><input type="number" id="inpValor" step="0.01" min="0.01" class="form-control" required></div>
+                            <div class="col-6"><label>Data</label><input type="date" id="inpData" class="form-control" required></div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6"><label>Tipo</label><select id="inpTipo" class="form-select"><option value="RECEITA">Receita</option><option value="DESPESA">Despesa</option></select></div>
+                            <div class="col-6"><label>Categoria</label><select id="inpCat" class="form-select" required><option value="" selected disabled>Carregando...</option></select></div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer"><button class="btn btn-primary" onclick="salvarTitulo()">Salvar</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        function toggleSenha() {
+            const input = document.getElementById('senha');
+            const icon = document.getElementById('iconSenha');
+            if (input.type === 'password') {
+                input.type = 'text'; icon.classList.replace('bi-eye', 'bi-eye-slash');
+            } else {
+                input.type = 'password'; icon.classList.replace('bi-eye-slash', 'bi-eye');
+            }
+        }
+    </script>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+
+services:
+  # 1. API (FastAPI)
+  api:
+    build: .
+    container_name: financeiro_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy 
+    restart: always
+    # Adiciona o comando que copia o .env.example e depois inicia o Uvicorn
+    # Isso garante que o .env exista para o servidor Python
+    command: /bin/sh -c "cp -n .env.example .env && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+  # 2. FRONTEND (Nginx/JS)
+  frontend:
+    build: ./frontend
+    container_name: financeiro_frontend
+    ports:
+      - "3000:80" # Nginx roda na porta 80, exposta na 3000
+    depends_on:
+      - api # Depende da API estar de pé para funcionar
+    restart: always
+
+  # 3. DB (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: financeiro_db
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+# Volumes para persistência de dados do DB
+volumes:
+  postgres_data:

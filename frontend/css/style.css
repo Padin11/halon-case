@@ -1,0 +1,38 @@
+:root {
+    --primary-bg: #f3f4f6;
+    --sidebar-width: 250px;
+}
+
+body { background-color: var(--primary-bg); font-family: 'Segoe UI', sans-serif; }
+
+/* Login Styles */
+.login-wrapper {
+    position: fixed; inset: 0; z-index: 9999;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* Dashboard Styles */
+.kpi-card {
+    border: none; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: transform 0.2s; background: white; overflow: hidden;
+}
+.kpi-card:hover { transform: translateY(-5px); }
+.kpi-icon { opacity: 0.2; position: absolute; right: 20px; top: 20px; font-size: 3rem; }
+
+.chart-container {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px;
+}
+
+.list-group-item { border: none; border-bottom: 1px solid #eee; padding: 15px; }
+.list-group-item:last-child { border-bottom: none; }
+
+.avatar-initial {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #e9ecef; color: #495057;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; margin-right: 15px;
+}
+
+.hidden { display: none !important; }
