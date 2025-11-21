@@ -61,7 +61,6 @@ Este projeto não foi concebido apenas como um CRUD, mas como uma base sólida p
 2.  **Configuração de Ambiente (Automatizado):** O arquivo `docker-compose.yml` está configurado para **copiar automaticamente** o `.env.example` para `.env` na primeira vez que você executar o Docker.
 
 ### 2. Suba os Containers
-```bash
 
 1.  **Configuração de Ambiente (.env):**
     O projeto já possui um arquivo `.env` configurado para o ambiente Docker local padrão.
